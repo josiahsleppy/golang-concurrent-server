@@ -1,0 +1,13 @@
+/* Styles for the golang-concurrent-server demo site */
+
+.text-center {
+    text-align: center;
+}
+
+.bottom-margin {
+    margin-bottom: 15px;
+}
+
+.top-margin {
+    margin-top: 15px;
+}

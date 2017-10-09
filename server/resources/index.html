@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Golang Concurrent Server Demo</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/styles/site.css">
+    </head>
+    <body>
+        <div class="text-center top-margin">
+            <div class="bottom-margin">
+                <h4>Enter a number for which to find the maximum Collatz count:</h4>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-xs-offset-4 col-sm-2 col-sm-offset-5">
+                    <div class="bottom-margin">
+                        <input type="text" class="form-control js-input-box" />
+                    </div>
+                    <div class="bottom-margin">
+                        <p>How many requests?</p>
+                        <select class="form-control js-request-options">
+                            <option value="1">1</option>
+                            <option value="10">10</option>
+                            <option value="100">100</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div class="bottom-margin">
+                        <button class="btn btn-primary js-send-requests">Send Requests</button>
+                    </div>
+                    <div class="text-danger js-response-div">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="/scripts/index.js"></script>
+    </body>
+</html>

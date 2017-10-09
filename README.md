@@ -1,1 +1,1 @@
-# golang-concurrent-server
+An example web server project for a talk given at the 2017 Columbus Code Camp.
