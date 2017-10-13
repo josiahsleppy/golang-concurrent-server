@@ -6,10 +6,12 @@
             responseDiv.innerHTML = '';
             let userInput = document.querySelector('.js-input-box').value;
             let requestTimes = document.querySelector('.js-request-options').value;
+            let goroutineFlag = document.querySelector('.js-goroutine-flag').checked;
             if (requestTimes > 1000) {
                 requestTimes = 1000;
             }
-            makeRequests('/api/collatz?num=' + userInput, requestTimes).then(resp => {
+            let uri = '/api/collatz?num=' + userInput + '&conc=' + goroutineFlag;
+            makeRequests(uri, requestTimes).then(resp => {
                 return resp.text();
             }).then(text => {
                 responseDiv.innerHTML = text;

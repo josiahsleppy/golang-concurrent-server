@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Golang Concurrent Server Demo</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="/styles/site.css">
     </head>
     <body>
-        <div class="text-center top-margin">
-            <div class="bottom-margin">
+        <div class="text-center">
+            <div class="form-group">
                 <h4>Enter a number for which to find the maximum Collatz count:</h4>
             </div>
             <div class="row">
                 <div class="col-xs-4 col-xs-offset-4 col-sm-2 col-sm-offset-5">
-                    <div class="bottom-margin">
+                    <div class="form-group">
                         <input type="text" class="form-control js-input-box" />
                     </div>
-                    <div class="bottom-margin">
-                        <p>How many requests?</p>
+                    <div class="form-group">
+                        <p><b>How many requests?</b></p>
                         <select class="form-control js-request-options">
                             <option value="1">1</option>
                             <option value="10">10</option>
@@ -25,7 +26,13 @@
                             <option value="1000">1000</option>
                         </select>
                     </div>
-                    <div class="bottom-margin">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" class="js-goroutine-flag" />
+                            Use goroutines?
+                        </label>
+                    </div>
+                    <div class="form-group">
                         <button class="btn btn-primary js-send-requests">Send Requests</button>
                     </div>
                     <div class="text-danger js-response-div">

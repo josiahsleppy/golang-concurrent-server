@@ -1,48 +1,82 @@
 package collatz
 
-import "sort"
+import (
+	"sort"
+	"time"
 
-//Collatz returns the maximum Collatz count for all numbers 1 through n.
-//An secondary parameter specifies whether partitioning should be used in the calculations.
-func Collatz(n int, useChunk bool) int {
+	"github.com/fatih/stopwatch"
+)
+
+//Collatz returns the maximum Collatz count for all numbers 1 through n and
+//the time it took to perform this calculation. A parameter specifies
+//whether to calculate this value using concurrent goroutines.
+func Collatz(n int, concurrent bool) (int, time.Duration) {
 	if n < 1 {
-		return -1
+		return -1, 0
 	}
-	var retVal int
-	if useChunk {
-		const partitionSize = 1000
-		array := []int{}
+
+	/* if true {
+		time.Sleep(3 * time.Second)
+		return 1, 0
+	} */
+
+	const partitionSize = 10000
+	array := []int{}
+	sw := stopwatch.Start(0)
+
+	if concurrent {
+		values := make(chan int, 1000)
+		chunkCalls := 0
+		for i := n; i >= 1; i -= partitionSize {
+			startIndex := i - partitionSize + 1
+			if startIndex < 1 {
+				startIndex = 1
+			}
+			go chunkConcurrent(startIndex, i, values)
+			chunkCalls++
+		}
+		for i := 0; i < chunkCalls; i++ {
+			array = append(array, <-values)
+		}
+	} else {
 		for i := 1; i <= n; i += partitionSize {
 			endIndex := i + partitionSize - 1
 			if endIndex > n {
 				endIndex = n
 			}
 			localMax := chunk(i, endIndex)
-			go chunk(i, endIndex)
 			array = append(array, localMax)
 		}
-		//sort
-		sort.Slice(array, func(i, j int) bool {
-			return array[i] > array[j]
-		})
-		retVal = array[0]
-	} else {
-		retVal = chunk(1, n)
 	}
-	return retVal
+
+	sort.Slice(array, func(i, j int) bool {
+		return array[i] > array[j]
+	})
+
+	sw.Stop()
+	return array[0], sw.ElapsedTime()
 }
 
 func chunk(startIndex, endIndex int) int {
 	array := []int{}
 	for i := startIndex; i <= endIndex; i++ {
-		count := loop(i)
-		array = append(array, count)
+		array = append(array, loop(i))
 	}
-	//sort
 	sort.Slice(array, func(i, j int) bool {
 		return array[i] > array[j]
 	})
 	return array[0]
+}
+
+func chunkConcurrent(startIndex, endIndex int, values chan<- int) {
+	array := []int{}
+	for i := startIndex; i <= endIndex; i++ {
+		array = append(array, loop(i))
+	}
+	sort.Slice(array, func(i, j int) bool {
+		return array[i] > array[j]
+	})
+	values <- array[0]
 }
 
 func loop(n int) int {
