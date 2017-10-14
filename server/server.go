@@ -7,12 +7,16 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/josiahsleppy/golang-concurrent-server/collatzHelper"
+	"github.com/josiahsleppy/golang-concurrent-server/collatz"
 )
 
 func main() {
+	//Serve static files from a directory.
 	http.Handle("/", http.FileServer(http.Dir("../resources")))
+	//Or specify a custom handler for specific routes.
 	http.HandleFunc("/api/collatz", collatzHandler)
+	//ListenAndServe listens on a specified port and accepts new connections
+	//in an infinite loop, spawning a new goroutine for each.
 	log.Fatal(http.ListenAndServe(":12345", nil))
 }
 
@@ -26,5 +30,7 @@ func collatzHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	value, elapsedTime := collatz.Collatz(numValue, concurrent == "true")
-	fmt.Fprintf(w, "%d - First operation took %s to complete \n", value, elapsedTime)
+	//http.ResponseWriter implements the io.Writer interface, which is why it can be
+	//used here. Fprintf will call its Write method which writes to the response.
+	fmt.Fprintf(w, "%d - Single operation took %s to complete \n", value, elapsedTime)
 }

@@ -20,9 +20,9 @@ func Collatz(n int, concurrent bool) (int, time.Duration) {
 		return 1, 0
 	} */
 
-	const partitionSize = 10000
-	array := []int{}
 	sw := stopwatch.Start(0)
+	numSlice := []int{}
+	const partitionSize = 10000
 
 	if concurrent {
 		values := make(chan int, 1000)
@@ -36,7 +36,7 @@ func Collatz(n int, concurrent bool) (int, time.Duration) {
 			chunkCalls++
 		}
 		for i := 0; i < chunkCalls; i++ {
-			array = append(array, <-values)
+			numSlice = append(numSlice, <-values)
 		}
 	} else {
 		for i := 1; i <= n; i += partitionSize {
@@ -45,38 +45,38 @@ func Collatz(n int, concurrent bool) (int, time.Duration) {
 				endIndex = n
 			}
 			localMax := chunk(i, endIndex)
-			array = append(array, localMax)
+			numSlice = append(numSlice, localMax)
 		}
 	}
 
-	sort.Slice(array, func(i, j int) bool {
-		return array[i] > array[j]
+	sort.Slice(numSlice, func(i, j int) bool {
+		return numSlice[i] > numSlice[j]
 	})
 
 	sw.Stop()
-	return array[0], sw.ElapsedTime()
+	return numSlice[0], sw.ElapsedTime()
 }
 
 func chunk(startIndex, endIndex int) int {
-	array := []int{}
+	numSlice := []int{}
 	for i := startIndex; i <= endIndex; i++ {
-		array = append(array, loop(i))
+		numSlice = append(numSlice, loop(i))
 	}
-	sort.Slice(array, func(i, j int) bool {
-		return array[i] > array[j]
+	sort.Slice(numSlice, func(i, j int) bool {
+		return numSlice[i] > numSlice[j]
 	})
-	return array[0]
+	return numSlice[0]
 }
 
 func chunkConcurrent(startIndex, endIndex int, values chan<- int) {
-	array := []int{}
+	numSlice := []int{}
 	for i := startIndex; i <= endIndex; i++ {
-		array = append(array, loop(i))
+		numSlice = append(numSlice, loop(i))
 	}
-	sort.Slice(array, func(i, j int) bool {
-		return array[i] > array[j]
+	sort.Slice(numSlice, func(i, j int) bool {
+		return numSlice[i] > numSlice[j]
 	})
-	values <- array[0]
+	values <- numSlice[0]
 }
 
 func loop(n int) int {

@@ -8,10 +8,10 @@ import (
 	"strconv"
 )
 
-//A global buffered channel that we can send work requests on. The dispatcher listens to it
+//A global buffered channel that we can send work requests on. The dispatcher listens to it.
 var jobQueue chan job
 
-//Contains information relevant to the job to be run, and a channel to send back results
+//Contains information relevant to the job to be run, and a channel to send back results.
 type job struct {
 	targetNumber int
 	concurrent   bool
@@ -23,7 +23,7 @@ func main() {
 	http.HandleFunc("/api/collatz", collatzHandler)
 	jobQueue = make(chan job, 100)
 	//The number of workers to start up for best performance
-	//is really down to the specific machine
+	//really depends on the specific machine.
 	dispatcher := newDispatcher(500)
 	dispatcher.run()
 	log.Fatal(http.ListenAndServe(":12345", nil))
@@ -40,10 +40,10 @@ func collatzHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	results := make(chan response)
-	//Create a new work item from the request values and send it to the job queue
+	//Create a new work item from the request values and send it to the job queue.
 	work := job{numValue, concurrent == "true", results}
 	jobQueue <- work
-	//Now we wait for the worker to send us the results
+	//Now we wait for the worker to send us the results.
 	response := <-results
-	fmt.Fprintf(w, "%d - First operation took %s to complete \n", response.maxCount, response.elapsedTime)
+	fmt.Fprintf(w, "%d - Single operation took %s to complete \n", response.maxCount, response.elapsedTime)
 }
