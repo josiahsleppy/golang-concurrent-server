@@ -23,8 +23,8 @@ func main() {
 	http.HandleFunc("/api/collatz", collatzHandler)
 	jobQueue = make(chan job, 100)
 	//The number of workers to start up for best performance
-	//really depends on the specific machine.
-	dispatcher := newDispatcher(500)
+	//really depends on the specific machine/expected load.
+	dispatcher := newDispatcher(1000)
 	dispatcher.run()
 	log.Fatal(http.ListenAndServe(":12345", nil))
 }
@@ -42,8 +42,11 @@ func collatzHandler(w http.ResponseWriter, r *http.Request) {
 	results := make(chan response)
 	//Create a new work item from the request values and send it to the job queue.
 	work := job{numValue, concurrent == "true", results}
+	fmt.Println("Received work request from client, sending to dispatcher")
 	jobQueue <- work
 	//Now we wait for the worker to send us the results.
 	response := <-results
+	fmt.Println("Received results from worker, sending response to client")
+	fmt.Println()
 	fmt.Fprintf(w, "%d - Single operation took %s to complete \n", response.maxCount, response.elapsedTime)
 }

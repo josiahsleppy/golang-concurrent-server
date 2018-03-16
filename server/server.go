@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/josiahsleppy/golang-concurrent-server/collatz"
+	// "github.com/josiahsleppy/helperFiles/collatz"
 )
 
 func main() {
@@ -29,6 +30,7 @@ func collatzHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Please enter a valid integer greater than zero.")
 		return
 	}
+	// value, elapsedTime := collatz.Collatz(numValue)
 	value, elapsedTime := collatz.Collatz(numValue, concurrent == "true")
 	//http.ResponseWriter implements the io.Writer interface, which is why it can be
 	//used here. Fprintf will call its Write method which writes to the response.

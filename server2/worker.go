@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/josiahsleppy/golang-concurrent-server/collatz"
@@ -35,13 +36,16 @@ func (w worker) start() {
 			//Select will block until one of the communications can proceed.
 			select {
 			case job := <-w.jobChannel:
+				fmt.Println("Received work request from dispatcher, beginning work")
 				//We have received a work request from the dispatcher.
 				maxCount, elapsedTime := collatz.Collatz(job.targetNumber, job.concurrent)
 				response := response{maxCount, elapsedTime}
 				//Send the results of our work on the results channel--our request
 				//handler is listening for this.
 				job.results <- response
+				fmt.Println("Work finished and results sent back to request handler")
 			case <-w.quit:
+				fmt.Println("Requested quit, shutting worker down")
 				//We have received a signal to stop.
 				return
 			}

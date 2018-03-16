@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //Dispatcher manages workers and the job queue.
 type dispatcher struct {
 	//A pool of worker's channels that are registered with the dispatcher.
@@ -19,6 +21,7 @@ func (d *dispatcher) run() {
 		worker := newWorker(d.workerPool)
 		worker.start()
 	}
+	fmt.Printf("Dispatcher initialized %d workers \n", d.numWorkers)
 	//Start the dispatcher spinning in a goroutine so this method can return.
 	go d.dispatch()
 }
@@ -29,6 +32,7 @@ func (d *dispatcher) dispatch() {
 	for {
 		//Wait for a work request from our main request handler.
 		job := <-jobQueue
+		fmt.Println("Received work request from handler")
 		//Once received, send off a goroutine so we can start listening
 		//for work almost immediately.
 		go func() {
@@ -36,8 +40,10 @@ func (d *dispatcher) dispatch() {
 			//registered to the dispatcher's worker pool. This will block until someone's
 			//available, but since we're in a goroutine, the enclosing function doesn't block.
 			jobChannel := <-d.workerPool
+			fmt.Println("Acquired worker")
 			//Dispatch the job to the worker job channel.
 			jobChannel <- job
+			fmt.Println("Dispatched to worker")
 		}()
 	}
 }

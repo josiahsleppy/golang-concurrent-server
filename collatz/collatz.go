@@ -16,7 +16,7 @@ func Collatz(n int, concurrent bool) (int, time.Duration) {
 	}
 
 	/* if true {
-		time.Sleep(3 * time.Second)
+		time.Sleep(1000 * time.Millisecond)
 		return 1, 0
 	} */
 
